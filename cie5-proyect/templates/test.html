@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIE-5 Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='test.css') }}">
+    <script src="test.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form action="/test" method="post"> <!-- Formulario comienza aquí -->
+            <h1>CIE-5 Test</h1>
+
+            <div class="question" id="question1">
+                <h2>I. Dominio clínico</h2>
+                <label for="q1">1. ¿Poco interés o satisfacción en hacer cosas?</label><br>
+                <select id="q1" name="q1" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question2">
+                <label for="q2">2. ¿Sentirse bajo de ánimo, deprimido o desesperanzado?</label><br>
+                <select id="q2" name="q2" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question3">
+                <h2>II. Irritabilidad</h2>
+                <label for="q3">3. ¿Sentirse más irritado, malhumorado o enfadado que normalmente?</label><br>
+                <select id="q3" name="q3" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question4">
+                <h2>III. Actividad y Energía</h2>
+                <label for="q4">4. ¿Dormir menos de lo normal pero todavía con mucha energía?</label><br>
+                <select id="q4" name="q4" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question5">
+                <label for="q5">5. ¿Empezar más proyectos de lo normal o hacer cosas más arriesgadas de lo normal?</label><br>
+                <select id="q5" name="q5" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question6">
+                <h2>IV. Ansiedad</h2>
+                <label for="q6">6. ¿Sentirse nervioso, ansioso, preocupado o al límite?</label><br>
+                <select id="q6" name="q6" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question7">
+                <label for="q7">7. ¿Sentir pánico o estar atemorizado?</label><br>
+                <select id="q7" name="q7" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question8">
+                <label for="q8">8. ¿Evitar situaciones que le ponen nervioso?</label><br>
+                <select id="q8" name="q8" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question9">
+                <h2>V. Síntomas Somáticos</h2>
+                <label for="q9">9. ¿Dolores o molestias inexplicados (p. ej., cabeza, espalda, articulaciones, abdomen, piernas)?</label><br>
+                <select id="q9" name="q9" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question10">
+                <label for="q10">10. ¿Sentir que sus enfermedades no se toman lo suficientemente en serio?</label><br>
+                <select id="q10" name="q10" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question11">
+                <h2>VI. Pensamientos Suicidas</h2>
+                <label for="q11">11. ¿Tener pensamientos de dañarse a sí mismo?</label><br>
+                <select id="q11" name="q11" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question12">
+                <h2>VII. Psicóticos</h2>
+                <label for="q12">12. ¿Oír cosas que otras personas no podrían oír, como voces, incluso cuando no hay nadie alrededor?</label><br>
+                <select id="q12" name="q12" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question13">
+                <label for="q13">13. ¿Sentir que alguien podría oír sus pensamientos o que usted podría escuchar lo que otra persona estaba pensando?</label><br>
+                <select id="q13" name="q13" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question14">
+                <h2>VIII. Problemas de Sueño y Cognitivos</h2>
+                <label for="q14">14. ¿Problemas de sueño que afectan a su calidad de sueño en general?</label><br>
+                <select id="q14" name="q14" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question15">
+                <label for="q15">15. ¿Problemas con la memoria (p. ej., aprender nueva información) o con la ubicación (p. ej., encontrar el camino a casa)?</label><br>
+                <select id="q15" name="q15" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question16">
+                <h2>IX. Pensamientos Intrusivos</h2>
+                <label for="q16">16. ¿Pensamientos desagradables, necesidades urgentes o imágenes repetidas en su cabeza?</label><br>
+                <select id="q16" name="q16" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question17">
+                <label for="q17">17. ¿Sentirse impulsado a realizar ciertos comportamientos o actos mentales una y otra vez?</label><br>
+                <select id="q17" name="q17" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question18">
+                <h2>X. Problemas de Identidad y Relación</h2>
+                <label for="q18">18. ¿Sentir que no es realmente usted mismo o que está muy separado de sí mismo?</label><br>
+                <select id="q18" name="q18" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question19">
+                <label for="q19">19. ¿No saber quién es realmente o qué es lo que quiere de la vida?</label><br>
+                <select id="q19" name="q19" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question20">
+                <label for="q20">20. ¿No sentirse cercano a otras personas o no disfrutar de sus relaciones con ellas?</label><br>
+                <select id="q20" name="q20" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question21">
+                <h2>XI. Consumo de Sustancias</h2>
+                <label for="q21">21. ¿Tomar al menos cuatro bebidas de cualquier tipo de alcohol en un solo día?</label><br>
+                <select id="q21" name="q21" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            
+
+            <div class="question" id="question22">
+                <label for="q22">22. ¿Fumar cigarrillos, puros o en pipa, o usar tabaco en polvo, o masticar tabaco?</label><br>
+                <select id="q22" name="q22" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="question" id="question23">
+                <h2>XII. Uso de Sustancias no Prescritas</h2>
+                <label for="q23">23. ¿Usar una de las medicinas siguientes A SU MANERA, esto es, sin la prescripción de un médico, en mayores cantidades o más tiempo de lo prescrito?</label><br>
+                <select id="q23" name="q23" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="0">0: Nada en ningún momento</option>
+                    <option value="1">1: Algo raro, menos de un día o dos</option>
+                    <option value="2">2: Leve, varios días</option>
+                    <option value="3">3: Moderado, más de la mitad de los días</option>
+                    <option value="4">4: Grave, casi cada día</option>
+                </select><br>
+            </div>
+
+            <div class="navigation">
+                <button type="button" id="prevBtn" onclick="previousQuestion()">Anterior</button>
+                <button type="button" id="nextBtn" onclick="nextQuestion()">Siguiente</button>
+                <button type="button" id="submitBtn" onclick="submitForm()" style="display: none;">Enviar</button>
+            </div>
+        </form> <!-- Formulario termina aquí -->
+
+    </div>
+    <script>
+        // Lógica JavaScript para mostrar una pregunta a la vez y manejar la navegación
+        let currentQuestion = 1;
+        const totalQuestions = 23;  // Ajusta este número según la cantidad total de preguntas
+
+        function showQuestion(questionNumber) {
+            // Oculta todas las preguntas
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById('question' + i).style.display = 'none';
+            }
+            // Muestra la pregunta actual
+            document.getElementById('question' + questionNumber).style.display = 'block';
+
+            // Oculta o muestra los botones de navegación según la pregunta actual
+            if (questionNumber === 1) {
+                document.getElementById('prevBtn').style.display = 'none';
+            } else {
+                document.getElementById('prevBtn').style.display = 'inline-block';
+            }
+
+            if (questionNumber === totalQuestions) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+
+            currentQuestion = questionNumber;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 1) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function submitForm() {
+            // Aquí podrías agregar lógica adicional antes de enviar el formulario, si es necesario
+            document.querySelector('form').submit();
+        }
+
+        // Mostrar la primera pregunta al cargar la página
+        showQuestion(1);
+    </script>
+</body>
+</html>

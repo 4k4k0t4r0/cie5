@@ -121,17 +121,82 @@ def resultados():
     return render_template("resultados.html", diagnosis=diagnosis)
 
 
+from dotenv import load_dotenv
+import os
+import openai
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
+
+# Definir tu API key de OpenAI
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Definir las descripciones de los puntajes según el DSM-5
+score_descriptions = {
+    "0": "Nada en ningún momento",
+    "1": "Algo raro, menos de un día o dos",
+    "2": "Leve, varios días",
+    "3": "Moderado, más de la mitad de los días",
+    "4": "Grave, casi cada día",
+}
+
+# Mapeo de preguntas a dominios DSM-5
+question_domains = {
+    "Pregunta 1": "Depresión",
+    "Pregunta 2": "Ira",
+    "Pregunta 3": "Manía",
+    "Pregunta 4": "Ansiedad",
+    "Pregunta 5": "Síntomas somáticos",
+    "Pregunta 6": "Ideas suicidas",
+    "Pregunta 7": "Psicosis",
+    "Pregunta 8": "Problemas de sueño",
+    "Pregunta 9": "Memoria",
+    "Pregunta 10": "Pensamientos y comportamientos repetitivos",
+    "Pregunta 11": "Disociación",
+    "Pregunta 12": "Funcionamiento de la personalidad",
+    "Pregunta 13": "Consumo de sustancias",
+}
+
+
 def generate_diagnosis(responses):
+    # Obtener respuestas y convertir a texto descriptivo
     scores = [int(response[2]) for response in responses]
-    total_score = sum(scores)
-    if total_score < 20:
-        return "Salud mental en buen estado"
-    elif total_score < 40:
-        return "Indicativos leves de problemas de salud mental"
-    elif total_score < 60:
-        return "Indicativos moderados de problemas de salud mental"
-    else:
-        return "Indicativos graves de problemas de salud mental"
+    responses_text = "\n".join(
+        [
+            f"{question_domains.get(f'Pregunta {i}', 'Dominio desconocido')}: {score_descriptions[str(score)]}"
+            for i, score in enumerate(scores, start=1)
+        ]
+    )
+
+    # Crear el mensaje para enviar al modelo de OpenAI
+    messages = [
+        {
+            "role": "system",
+            "content": "Eres un asistente médico que proporciona diagnósticos basados en el DSM-5.",
+        },
+        {
+            "role": "user",
+            "content": f"Estas son las respuestas del paciente al cuestionario DSM-5:\n{responses_text}\nProporciona un diagnóstico basado en estas respuestas.",
+        },
+    ]
+
+    # Llamar al API de OpenAI para obtener un diagnóstico más detallado
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            max_tokens=150,
+            temperature=0.7,
+        )
+        diagnosis = response["choices"][0]["message"]["content"].strip()
+    except openai.error.OpenAIError as e:
+        print(f"OpenAI API error: {str(e)}")
+        diagnosis = "No se pudo generar un diagnóstico en este momento debido a un error de la API de OpenAI."
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        diagnosis = "No se pudo generar un diagnóstico en este momento debido a un error inesperado."
+
+    return diagnosis
 
 
 if __name__ == "__main__":

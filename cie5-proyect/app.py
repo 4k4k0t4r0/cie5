@@ -9,8 +9,6 @@ from flask_login import (
     UserMixin,
 )
 
-import cv2 #funcion para la camara
-from deepface import DeepFace
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -164,35 +162,6 @@ def resultados():
         last_name=last_name,
         gender=gender,
     )
-
-# Configurar la cámara y analizar expresiones faciales
-def gen_frames():
-    camera = cv2.VideoCapture(0)
-    while True:
-        success, frame = camera.read()
-        if not success:
-            break
-        else:
-            # Analizar expresiones faciales
-            result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-            emotion = result['dominant_emotion']
-            cv2.putText(frame, emotion, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-            
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-#-----------------------------------------------------------------------------------------------------------------
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route("/camera")
-@login_required
-def camera():
-    return render_template("camera.html")
-
-#------------------------------------------------------------------------------------------------------------------
 
 
 from dotenv import load_dotenv

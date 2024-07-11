@@ -1,0 +1,3 @@
+# Exclude environment files
+.venv
+.env

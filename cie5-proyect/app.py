@@ -22,7 +22,7 @@ app.secret_key = "your_secret_key"
 # Configuración de MySQL
 app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
-app.config["MYSQL_PASSWORD"] = "KIOya100*"
+app.config["MYSQL_PASSWORD"] = "Xavy200219."
 app.config["MYSQL_DB"] = "cie5"
 
 mysql = MySQL(app)
@@ -145,19 +145,34 @@ def test():
         )
         mysql.connection.commit()
         diagnosis = generate_diagnosis(responses)
-        cursor.execute(
-            "INSERT INTO diagnoses (user_id, diagnosis) VALUES (%s, %s)",
-            (current_user.id, diagnosis),
-        )
-        mysql.connection.commit()
-        return redirect(url_for("resultados", diagnosis=diagnosis))
+        recommendations = generate_recommendations(diagnosis)
+        
+        # Directly pass recommendations to the resultados route
+        return redirect(url_for("resultados", diagnosis=diagnosis, recommendations=recommendations))
     return render_template("test.html")
+
 
 @app.route("/resultados")
 @login_required
 def resultados():
     diagnosis = request.args.get("diagnosis")
-    return render_template("resultados.html", diagnosis=diagnosis)
+    recommendations = request.args.get("recommendations")
+    
+    # Obtener información del usuario para mostrar en la página de resultados
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT first_name, last_name, age, gender FROM users WHERE id = %s", (current_user.id,))
+    user_info = cursor.fetchone()
+    user = {
+        "first_name": user_info[0],
+        "last_name": user_info[1],
+        "age": user_info[2],
+        "gender": user_info[3]
+    }
+
+    return render_template("resultados.html", diagnosis=diagnosis, recommendations=recommendations, user=user)
+
+
+
 
 def generate_diagnosis(responses):
     # Obtener respuestas y convertir a texto descriptivo
@@ -173,7 +188,7 @@ def generate_diagnosis(responses):
     messages = [
         {
             "role": "system",
-            "content": "Eres un asistente médico que proporciona diagnósticos basados en el DSM-5.",
+            "content": "Eres un asistente médico que proporciona diagnósticos basados en el DSM-5. que sea resumido en maximo 12 lineas",
         },
         {
             "role": "user",
@@ -186,7 +201,7 @@ def generate_diagnosis(responses):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=messages,
-            max_tokens=150,
+            max_tokens=200,
             temperature=0.7,
         )
         diagnosis = response["choices"][0]["message"]["content"].strip()
@@ -197,11 +212,39 @@ def generate_diagnosis(responses):
         print(f"Unexpected error: {str(e)}")
         diagnosis = "No se pudo generar un diagnóstico en este momento debido a un error inesperado."
 
-    # Enviar correo de alerta si el diagnóstico es grave
-    if "Grave" in responses_text:
-        send_alert_email(diagnosis)
-        
     return diagnosis
+
+
+def generate_recommendations(diagnosis):
+    # Crear el mensaje para enviar al modelo de OpenAI
+    messages = [
+        {
+            "role": "system",
+            "content": "Eres un asistente médico que proporciona recomendaciones basadas en diagnósticos DSM-5, maximo 4 y en listados con un salto de linea.",
+        },
+        {
+            "role": "user",
+            "content": f"El diagnóstico del paciente es el siguiente:\n{diagnosis}\nProporciona recomendaciones basadas en este diagnóstico.",
+        },
+    ]
+
+    # Llamar al API de OpenAI para obtener recomendaciones
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            max_tokens=300,
+            temperature=0.7,
+        )
+        recommendations = response["choices"][0]["message"]["content"].strip()
+    except openai.error.OpenAIError as e:
+        print(f"OpenAI API error: {str(e)}")
+        recommendations = "No se pudieron generar recomendaciones en este momento debido a un error de la API de OpenAI."
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        recommendations = "No se pudieron generar recomendaciones en este momento debido a un error inesperado."
+
+    return recommendations
 
 def send_alert_email(diagnosis):
     mimeMessage = MIMEMultipart()

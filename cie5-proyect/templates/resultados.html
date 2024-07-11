@@ -1,26 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='resultados.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Resultados del Test</h1>
-        <div class="result-box-datos">
-            <p class="info-heading">Información del Usuario:</p>
-            <p><strong>Nombre:</strong> {{ first_name }} {{ last_name }}</p>
-            <p><strong>Edad:</strong> {{ age }}</p>
-            <p><strong>Género:</strong> {{ gender }}</p>
-        </div>
         
-        <div class="result-box">
-            <p class="info-heading">Diagnóstico:</p>
-            <p>{{ diagnosis }}</p>
+        <div class="recommendations">
+            <h2>Recomendaciones</h2>
+            <p id="recommendations">{{ recommendations }}</p>
         </div>
 
+        <div class="user-info">
+            <h2>Información del Usuario</h2>
+            <p><strong>Nombre:</strong> <span id="user-name">{{ user.first_name }} {{ user.last_name }}</span></p>
+            <p><strong>Edad:</strong> <span id="user-age">{{ user.age }}</span></p>
+            <p><strong>Género:</strong> <span id="user-gender">{{ user.gender }}</span></p>
+        </div>
+
+        <div class="result-box">
+            <h2>Resultados del Test</h2>
+            <p id="diagnosis">{{ diagnosis }}</p>
+        </div>
+
+        <div class="btn-container">
+            <button id="download-pdf-btn" class="btn">Descargar PDF</button>
+            <a href="{{ url_for('index') }}" class="btn">Volver a la página principal</a>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const { jsPDF } = window.jspdf;
+
+            document.getElementById('download-pdf-btn').addEventListener('click', function() {
+                const doc = new jsPDF();
+
+                // Variables de posición para el texto
+                let y = 10;
+
+                // Agregar título
+                doc.setFontSize(20);
+                doc.text('Resultados del Test', 10, y);
+                y += 10;
+
+                // Agregar Información del Usuario
+                doc.setFontSize(16);
+                y += 10;
+                doc.text('Información del Usuario', 10, y);
+                doc.setFontSize(12);
+                y += 10;
+                const userName = document.getElementById('user-name').textContent;
+                const userAge = document.getElementById('user-age').textContent;
+                const userGender = document.getElementById('user-gender').textContent;
+                doc.text(`Nombre: ${userName}`, 10, y);
+                y += 10;
+                doc.text(`Edad: ${userAge}`, 10, y);
+                y += 10;
+                doc.text(`Género: ${userGender}`, 10, y);
+                y += 20;
+
+                // Agregar Resultados del Test
+                doc.setFontSize(16);
+                doc.text('Resultados del Test', 10, y);
+                doc.setFontSize(12);
+                y += 10;
+                const diagnosis = document.getElementById('diagnosis').textContent;
+                const diagnosisLines = doc.splitTextToSize(diagnosis, 180);
+                doc.text(diagnosisLines, 10, y);
+                y += diagnosisLines.length * 10;
+                y += 10;
+
+                // Agregar Recomendaciones
+                doc.setFontSize(16);
+                doc.text('Recomendaciones', 10, y);
+                doc.setFontSize(12);
+                y += 10;
+                const recommendations = document.getElementById('recommendations').textContent;
+                const recommendationLines = doc.splitTextToSize(recommendations, 180);
+                doc.text(recommendationLines, 10, y);
+                y += recommendationLines.length * 10;
+
+                // Guardar el PDF
+                doc.save('resultados.pdf');
+            });
+        });
+    </script>
 </body>
 </html>

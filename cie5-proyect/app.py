@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, Response
+from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 from flask_login import (
     LoginManager,
@@ -8,7 +8,13 @@ from flask_login import (
     current_user,
     UserMixin,
 )
-
+from dotenv import load_dotenv
+import os
+import openai
+from Google import Create_Service
+import base64
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -23,156 +29,19 @@ mysql = MySQL(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
-
-class User(UserMixin):
-    def __init__(self, id):
-        self.id = id
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id)
-
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    return redirect(url_for("login"))
-
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        try:
-            cursor = mysql.connection.cursor()
-            cursor.execute(
-                "SELECT id, age, first_name, last_name, gender FROM users WHERE username = %s AND password = %s",
-                (username, password),
-            )
-            user = cursor.fetchone()
-            if user:
-                user_id, age, first_name, last_name, gender = user
-                login_user(User(user_id))
-
-                # Almacenar datos del usuario en la sesión
-                session["age"] = age
-                session["first_name"] = first_name
-                session["last_name"] = last_name
-                session["gender"] = gender
-
-                return redirect(url_for("test"))
-            else:
-                return (
-                    "Usuario o contraseña incorrectos",
-                    401,
-                )  # Devuelve un mensaje de error si no se encuentra el usuario
-        except Exception as e:
-            print(f"Error en la consulta SQL: {str(e)}")
-            return (
-                "Error interno del servidor",
-                500,
-            )  # Devuelve un mensaje de error genérico en caso de error
-        finally:
-            cursor.close()
-
-    return render_template("login.html")
-
-
-# Ruta de registro
-
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        age = request.form["age"]
-        first_name = request.form["first_name"]
-        last_name = request.form["last_name"]
-        gender = request.form["gender"]
-
-        cursor = mysql.connection.cursor()
-        cursor.execute(
-            "INSERT INTO users (username, password, age, first_name, last_name, gender) VALUES (%s, %s, %s, %s, %s, %s)",
-            (username, password, age, first_name, last_name, gender),
-        )
-        mysql.connection.commit()
-
-        # Optionally, you can automatically log in the user after registration
-        cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
-        user_id = cursor.fetchone()[0]
-        login_user(User(user_id))
-
-        return redirect(url_for("login"))
-
-    return render_template("registro.html")
-
-
-@app.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for("login"))
-
-
-@app.route("/test", methods=["GET", "POST"])
-@login_required
-def test():
-    if request.method == "POST":
-        responses = []
-        for i in range(1, 24):
-            response = request.form.get(f"q{i}")
-            responses.append((current_user.id, i, response))
-        cursor = mysql.connection.cursor()
-        cursor.executemany(
-            "INSERT INTO responses (user_id, question_id, response) VALUES (%s, %s, %s)",
-            responses,
-        )
-        mysql.connection.commit()
-        diagnosis = generate_diagnosis(responses)
-        cursor.execute(
-            "INSERT INTO diagnoses (user_id, diagnosis) VALUES (%s, %s)",
-            (current_user.id, diagnosis),
-        )
-        mysql.connection.commit()
-        return redirect(url_for("resultados", diagnosis=diagnosis))
-    return render_template("test.html")
-
-
-@app.route("/resultados")
-@login_required
-def resultados():
-    diagnosis = request.args.get("diagnosis")
-
-
-
-
-    # Obtener datos del usuario desde la sesión
-    age = session.get("age")
-    first_name = session.get("first_name")
-    last_name = session.get("last_name")
-    gender = session.get("gender")
-
-    return render_template(
-        "resultados.html",
-        diagnosis=diagnosis,
-        age=age,
-        first_name=first_name,
-        last_name=last_name,
-        gender=gender,
-    )
-
-
-from dotenv import load_dotenv
-import os
-import openai
-
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
 # Definir tu API key de OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Configuración de Gmail API
+CLIENTE = "cie5-proyect/config/config.json"  # Ajusta la ruta según sea necesario
+API_NAME = "gmail"
+API_VERSION = "v1"
+SCOPES = ["https://mail.google.com/"]
+
+service = Create_Service(CLIENTE, API_NAME, API_VERSION, SCOPES)
 
 # Definir las descripciones de los puntajes según el DSM-5
 score_descriptions = {
@@ -200,6 +69,95 @@ question_domains = {
     "Pregunta 13": "Consumo de sustancias",
 }
 
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    return redirect(url_for("login"))
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        cursor = mysql.connection.cursor()
+        cursor.execute(
+            "SELECT id FROM users WHERE username = %s AND password = %s",
+            (username, password),
+        )
+        user = cursor.fetchone()
+        if user:
+            login_user(User(user[0]))
+            return redirect(url_for("test"))
+    return render_template("login.html")
+
+# Ruta de registro
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        age = request.form["age"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        gender = request.form["gender"]
+
+        cursor = mysql.connection.cursor()
+        cursor.execute(
+            "INSERT INTO users (username, password, age, first_name, last_name, gender) VALUES (%s, %s, %s, %s, %s, %s)",
+            (username, password, age, first_name, last_name, gender),
+        )
+        mysql.connection.commit()
+
+        # Optionally, you can automatically log in the user after registration
+        cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+        user_id = cursor.fetchone()[0]
+        login_user(User(user_id))
+
+        return redirect(url_for("test"))
+
+    return render_template("registro.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
+
+@app.route("/test", methods=["GET", "POST"])
+@login_required
+def test():
+    if request.method == "POST":
+        responses = []
+        for i in range(1, 24):
+            response = request.form.get(f"q{i}")
+            responses.append((current_user.id, i, response))
+        cursor = mysql.connection.cursor()
+        cursor.executemany(
+            "INSERT INTO responses (user_id, question_id, response) VALUES (%s, %s, %s)",
+            responses,
+        )
+        mysql.connection.commit()
+        diagnosis = generate_diagnosis(responses)
+        cursor.execute(
+            "INSERT INTO diagnoses (user_id, diagnosis) VALUES (%s, %s)",
+            (current_user.id, diagnosis),
+        )
+        mysql.connection.commit()
+        return redirect(url_for("resultados", diagnosis=diagnosis))
+    return render_template("test.html")
+
+@app.route("/resultados")
+@login_required
+def resultados():
+    diagnosis = request.args.get("diagnosis")
+    return render_template("resultados.html", diagnosis=diagnosis)
 
 def generate_diagnosis(responses):
     # Obtener respuestas y convertir a texto descriptivo
@@ -239,8 +197,24 @@ def generate_diagnosis(responses):
         print(f"Unexpected error: {str(e)}")
         diagnosis = "No se pudo generar un diagnóstico en este momento debido a un error inesperado."
 
+    # Enviar correo de alerta si el diagnóstico es grave
+    if "Grave" in responses_text:
+        send_alert_email(diagnosis)
+        
     return diagnosis
 
+def send_alert_email(diagnosis):
+    mimeMessage = MIMEMultipart()
+    mimeMessage["subject"] = "Alerta de Diagnóstico Grave"
+    emailMsg = f"Se ha detectado un diagnóstico de gravedad:\n{diagnosis}"
+    mimeMessage["to"] = "keffo.stf@gmail.com"
+
+    mimeMessage.attach(MIMEText(emailMsg, "plain"))
+
+    raw_string = base64.urlsafe_b64encode(mimeMessage.as_bytes()).decode()
+
+    message = service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
+    print("Se ha enviado correctamente el correo de alerta.")
 
 if __name__ == "__main__":
     app.run(debug=True)

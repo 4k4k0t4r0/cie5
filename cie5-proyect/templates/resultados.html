@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='resultados.css') }}">
@@ -9,10 +9,18 @@
 <body>
     <div class="container">
         <h1>Resultados del Test</h1>
+        <div class="result-box-datos">
+            <p class="info-heading">Información del Usuario:</p>
+            <p><strong>Nombre:</strong> {{ first_name }} {{ last_name }}</p>
+            <p><strong>Edad:</strong> {{ age }}</p>
+            <p><strong>Género:</strong> {{ gender }}</p>
+        </div>
+        
         <div class="result-box">
+            <p class="info-heading">Diagnóstico:</p>
             <p>{{ diagnosis }}</p>
         </div>
-        <a href="{{ url_for('index') }}" class="btn">Volver a la página principal</a>
+
     </div>
 </body>
 </html>

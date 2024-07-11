@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 from flask_login import (
     LoginManager,
@@ -43,19 +43,44 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        cursor = mysql.connection.cursor()
-        cursor.execute(
-            "SELECT id FROM users WHERE username = %s AND password = %s",
-            (username, password),
-        )
-        user = cursor.fetchone()
-        if user:
-            login_user(User(user[0]))
-            return redirect(url_for("test"))
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute(
+                "SELECT id, age, first_name, last_name, gender FROM users WHERE username = %s AND password = %s",
+                (username, password),
+            )
+            user = cursor.fetchone()
+            if user:
+                user_id, age, first_name, last_name, gender = user
+                login_user(User(user_id))
+
+                # Almacenar datos del usuario en la sesión
+                session["age"] = age
+                session["first_name"] = first_name
+                session["last_name"] = last_name
+                session["gender"] = gender
+
+                return redirect(url_for("test"))
+            else:
+                return (
+                    "Usuario o contraseña incorrectos",
+                    401,
+                )  # Devuelve un mensaje de error si no se encuentra el usuario
+        except Exception as e:
+            print(f"Error en la consulta SQL: {str(e)}")
+            return (
+                "Error interno del servidor",
+                500,
+            )  # Devuelve un mensaje de error genérico en caso de error
+        finally:
+            cursor.close()
+
     return render_template("login.html")
 
 
 # Ruta de registro
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -78,7 +103,7 @@ def register():
         user_id = cursor.fetchone()[0]
         login_user(User(user_id))
 
-        return redirect(url_for("test"))
+        return redirect(url_for("login"))
 
     return render_template("registro.html")
 
@@ -118,7 +143,21 @@ def test():
 @login_required
 def resultados():
     diagnosis = request.args.get("diagnosis")
-    return render_template("resultados.html", diagnosis=diagnosis)
+
+    # Obtener datos del usuario desde la sesión
+    age = session.get("age")
+    first_name = session.get("first_name")
+    last_name = session.get("last_name")
+    gender = session.get("gender")
+
+    return render_template(
+        "resultados.html",
+        diagnosis=diagnosis,
+        age=age,
+        first_name=first_name,
+        last_name=last_name,
+        gender=gender,
+    )
 
 
 from dotenv import load_dotenv

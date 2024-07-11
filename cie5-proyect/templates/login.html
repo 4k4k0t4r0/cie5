@@ -1,24 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+        </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/static/styles.css">
     <title>Login</title>
 </head>
 <body>
-    <form action="/login" method="post">
-        <h1>Login</h1>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required><br>
-        <button type="submit">Login</button>
-    </form>
-
-    <div class="register-link">
-        <p>¿No tienes cuenta?</p>
-        <a href="{{ url_for('register') }}">Regístrate aquí</a>
+    <div class="login-container">
+        <form action="/login" method="post">
+            <div class="avatar"></div>
+            <h2 class="title tektur-custom" id="titulo">EVAIND TEST</h2>
+            <div class="input-container">
+                <label for="username">
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                </label>
+            </div>
+            <div class="input-container">
+                <label for="password">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </label>
+            </div>
+            <div class="options">
+                <label>
+                    <input type="checkbox" name="remember">
+                    Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+            <button type="submit" class="login-btn">LOGIN</button>
+            <div class="register-link">
+                <p>¿No tienes cuenta?</p>
+                <a href="{{ url_for('register') }}">Regístrate aquí</a>
+            </div>
+        </form>
     </div>
+
 </body>
 </html>

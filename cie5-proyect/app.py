@@ -22,7 +22,7 @@ app.secret_key = "your_secret_key"
 # Configuración de MySQL
 app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
-app.config["MYSQL_PASSWORD"] = "Xavy200219."
+app.config["MYSQL_PASSWORD"] = "KIOya100*"
 app.config["MYSQL_DB"] = "cie5"
 
 mysql = MySQL(app)

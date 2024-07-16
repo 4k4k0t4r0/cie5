@@ -5,95 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='resultados.css') }}">
+    <!-- Incluir Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+        </style>
+    
 </head>
 <body>
     <div class="container">
-        <h1>Resultados del Test</h1>
-        
-        <div class="recommendations">
-            <h2>Recomendaciones</h2>
-            <p id="recommendations">{{ recommendations }}</p>
-        </div>
-
-        <div class="user-info">
-            <h2>Información del Usuario</h2>
-            <p><strong>Nombre:</strong> <span id="user-name">{{ user.first_name }} {{ user.last_name }}</span></p>
-            <p><strong>Edad:</strong> <span id="user-age">{{ user.age }}</span></p>
-            <p><strong>Género:</strong> <span id="user-gender">{{ user.gender }}</span></p>
-        </div>
-
         <div class="result-box">
-            <h2>Resultados del Test</h2>
+            <h1 class="title tektur-custom" id="titulo">DIAGNÓSTICO</h1>
             <p id="diagnosis">{{ diagnosis }}</p>
         </div>
 
-        <div class="btn-container">
-            <button id="download-pdf-btn" class="btn">Descargar PDF</button>
-            <a href="{{ url_for('index') }}" class="btn">Volver a la página principal</a>
+        <div class="user-info">
+            <h1 class="title tektur-custom" id="titulo">RESULTADOS DEL TEST</h1>
+            <h2 class="title tektur-custom" id="titulo">Información del Usuario</h2>
+            <p><strong>Nombre:</strong> <span id="user-name">{{ user.first_name }} {{ user.last_name }}</span></p>
+            <p><strong>Edad:</strong> <span id="user-age">{{ user.age }}</span></p>
+            <p><strong>Género:</strong> <span id="user-gender">{{ user.gender }}</span></p>
+            <div class="result-box-datos">
+                <h1 class="title tektur-custom" id="titulo">Indicador</h1>
+                <img src="{{ url_for('serve_file', filename='indicator.png') }}" alt="Indicador de salud Mental">
+            </div>
+            <div class="btn-container">
+                <button id="download-pdf-btn" class="btn">Descargar PDF</button>
+            </div>
         </div>
+
+        <div class="recommendations">
+            <h1 class="title tektur-custom" id="titulo">RECOMENDACIONES</h1>
+            <p id="recommendations">{{ recommendations }}</p>
+        </div>
+
+
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const { jsPDF } = window.jspdf;
-
+        
             document.getElementById('download-pdf-btn').addEventListener('click', function() {
                 const doc = new jsPDF();
-
-                // Variables de posición para el texto
+        
                 let y = 10;
-
+                const pageHeight = doc.internal.pageSize.height;
+        
+                function checkPageEnd() {
+                    if (y > pageHeight - 20) {
+                        doc.addPage();
+                        y = 10;
+                    }
+                }
+        
                 // Agregar título
                 doc.setFontSize(20);
-                doc.text('EvAInd ', 90, y);
+                doc.text('EvAInd', 90, y);
                 y += 8;
-                doc.text('Conectando mentes, sanando corazones ', 40, y);
+                checkPageEnd();
+                doc.text('Conectando mentes, sanando corazones', 40, y);
                 y += 15;
+                checkPageEnd();
                 doc.text('Resultados del Test', 10, y);
                 y += 10;
-
+                checkPageEnd();
+        
                 // Agregar Información del Usuario
                 doc.setFontSize(16);
                 y += 10;
                 doc.text('Información del Usuario', 10, y);
                 doc.setFontSize(12);
                 y += 10;
-                const userName = document.getElementById('user-name').textContent;
-                const userAge = document.getElementById('user-age').textContent;
-                const userGender = document.getElementById('user-gender').textContent;
+                checkPageEnd();
+                const userName = document.getElementById('user-name').textContent.trim();
+                const userAge = document.getElementById('user-age').textContent.trim();
+                const userGender = document.getElementById('user-gender').textContent.trim();
                 doc.text(`Nombre: ${userName}`, 10, y);
                 y += 10;
+                checkPageEnd();
                 doc.text(`Edad: ${userAge}`, 10, y);
                 y += 10;
+                checkPageEnd();
                 doc.text(`Género: ${userGender}`, 10, y);
                 y += 20;
-
-                // Agregar Resultados del Test
+                checkPageEnd();
+        
+                // Agregar Resultados del Test (Diagnóstico)
                 doc.setFontSize(16);
-                doc.text('Resultados del Test', 10, y);
+                doc.text('Diagnóstico', 10, y);
                 doc.setFontSize(12);
                 y += 10;
-                const diagnosis = document.getElementById('diagnosis').textContent;
+                checkPageEnd();
+                const diagnosis = document.getElementById('diagnosis').textContent.trim(); // Trim para eliminar espacios al inicio y al final
                 const diagnosisLines = doc.splitTextToSize(diagnosis, 180);
                 doc.text(diagnosisLines, 10, y);
-                y += diagnosisLines.length * 10;
-                y += 10;
-
+                y += (diagnosisLines.length * 10) + 10; // Incrementar y de manera adecuada
+                checkPageEnd();
+                
                 // Agregar Recomendaciones
                 doc.setFontSize(16);
                 doc.text('Recomendaciones', 10, y);
                 doc.setFontSize(12);
                 y += 10;
-                const recommendations = document.getElementById('recommendations').textContent;
+                checkPageEnd();
+                const recommendations = document.getElementById('recommendations').textContent.trim(); // Trim para eliminar espacios al inicio y al final
                 const recommendationLines = doc.splitTextToSize(recommendations, 180);
                 doc.text(recommendationLines, 10, y);
-                y += recommendationLines.length * 10;
-
-                // Guardar el PDF
-                doc.save('resultados.pdf');
+                y += (recommendationLines.length * 10) + 10; // Incrementar y de manera adecuada
+                checkPageEnd();
+        
+                // Agregar imagen del indicador
+                const img = new Image();
+                img.src = "{{ url_for('serve_file', filename='indicator.png') }}";
+                img.onload = function() {
+                    doc.addImage(img, 'PNG', 10, y, 180, 60); // Ajusta la posición y tamaño de la imagen según sea necesario
+                    doc.save('resultados.pdf');
+                };
             });
         });
-    </script>
+        </script>
+        
+            <!-- Icono de salir -->
+            <div class="logout-icon" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+        <script>
+            function logout() {
+                window.location.href = "{{ url_for('logout') }}";
+            }
+        </script>
 </body>
 </html>

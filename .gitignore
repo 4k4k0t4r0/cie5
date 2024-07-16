@@ -1,3 +1,4 @@
 # Exclude environment files
 .venv
 .env
+/config/

@@ -10,35 +10,68 @@ body {
     justify-content: center;
     align-items: center;
 }
+img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+    max-width: 320px; /* Reducción del 30% del tamaño original */
+    height: 200px; /* Mantener la proporción de aspecto */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.result-box-datos {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    color: #000000;    
+}
 .container {
-    width: 90%;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1400px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem; /* Espaciado entre contenedores */
 }
 
-h1, h2 {
-    color: #ffffff; /* Azul oscuro */
+
+
+h1 {
+    color: #000000; 
+    font-family: 'Courier New', Courier, monospace;
     width: 100%;
     text-align: center;
 }
 
 .recommendations {
-    border: 1px solid #b0c4de; /* Azul pastel */
-    background-color: #2C3E50; /* Azul claro */
+    background-color: #ffffff;
+    color: #000000; 
+    font-family: 'Courier New', Courier, monospace;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px; /* Bordes redondeados */
-    width: 30%; /* Ocupa el 30% del ancho */
+    width: 40%; /* Ocupa el 30% del ancho */
     flex: 1;
 }
 
-.user-info, .result-box {
-    border: 1px solid #b0c4de; /* Azul pastel */
-    background-color: #2C3E50; /* Azul claro */
+.result-box {
+    background-color: #ffffff;
+    color: #000000; 
+    font-family: 'Courier New', Courier, monospace;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px; /* Bordes redondeados */
+    width: 80% !important; /* Forzar el ancho al 80% */
+    flex: 1;
+}
+.user-info {
+    background-color: #ffffff;
+    color: #000000; 
+    font-family: 'Courier New', Courier, monospace;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -47,31 +80,71 @@ h1, h2 {
     flex: 1;
 }
 
+
 .btn-container {
     width: 100%;
     text-align: center;
-    padding-top: 20px;
+    margin-top: auto; /* Empuja el contenedor de botón al final del contenedor */   
+    position: absolute; /* Posiciona de manera absoluta dentro del contenedor padre */
+    bottom: 10px; /* Ajusta la distancia desde la parte inferior del contenedor */
+    left: 0; /* Asegura que esté alineado a la izquierda dentro del contenedor */
+    right: 0; /* Asegura que esté alineado a la derecha dentro del contenedor */
 }
+
 
 .btn {
     display: inline-block;
     padding: 10px 20px;
     margin: 10px 0;
     border: none;
-    background-color: #3498db; /* Azul */
     color: #fff;
     text-align: center;
     cursor: pointer;
     text-decoration: none;
     border-radius: 5px;
+    background: #1ABC9C;
+    color: white;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .btn:hover {
-    background-color: #2980b9; /* Azul más oscuro */
+    background: linear-gradient(to right, #5b10b7, #2061d4);
 }
 
 .clearfix::after {
     content: "";
     clear: both;
     display: table;
+}
+.logout-icon {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #000;
+    z-index: 1000;
+    padding: 5px; /* Opcional: Espacio alrededor del icono */
+    border-radius: 50%; /* Opcional: Hacerlo circular */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Opcional: Sombra */
+}
+
+.logout-icon:hover {
+    color: #f00; /* Cambiar el color al pasar el ratón */
+}
+.tektur-custom {
+    font-family: "Tektur", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500; /* Puedes ajustar el peso de la fuente según necesites */
+    font-style: normal;
+    font-variation-settings:
+      "wdth" 100; /* Ajuste de variación de ancho */
+  }
+  .title {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #000000;
+    
 }

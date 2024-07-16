@@ -2,3 +2,5 @@
 .venv
 .env
 /config/
+token_gmail_v1.pickle
+entornovirtual/

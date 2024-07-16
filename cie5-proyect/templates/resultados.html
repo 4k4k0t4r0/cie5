@@ -42,90 +42,102 @@
 
 
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const { jsPDF } = window.jspdf;
-        
+    
             document.getElementById('download-pdf-btn').addEventListener('click', function() {
                 const doc = new jsPDF();
-        
                 let y = 10;
                 const pageHeight = doc.internal.pageSize.height;
-        
-                function checkPageEnd() {
-                    if (y > pageHeight - 20) {
+    
+                function checkPageEnd(extraSpace = 0) {
+                    if (y > pageHeight - 20 - extraSpace) {
                         doc.addPage();
                         y = 10;
                     }
                 }
-        
-                // Agregar título
-                doc.setFontSize(20);
-                doc.text('EvAInd', 90, y);
-                y += 8;
-                checkPageEnd();
-                doc.text('Conectando mentes, sanando corazones', 40, y);
-                y += 15;
-                checkPageEnd();
-                doc.text('Resultados del Test', 10, y);
-                y += 10;
-                checkPageEnd();
-        
-                // Agregar Información del Usuario
-                doc.setFontSize(16);
-                y += 10;
-                doc.text('Información del Usuario', 10, y);
-                doc.setFontSize(12);
-                y += 10;
-                checkPageEnd();
-                const userName = document.getElementById('user-name').textContent.trim();
-                const userAge = document.getElementById('user-age').textContent.trim();
-                const userGender = document.getElementById('user-gender').textContent.trim();
-                doc.text(`Nombre: ${userName}`, 10, y);
-                y += 10;
-                checkPageEnd();
-                doc.text(`Edad: ${userAge}`, 10, y);
-                y += 10;
-                checkPageEnd();
-                doc.text(`Género: ${userGender}`, 10, y);
-                y += 20;
-                checkPageEnd();
-        
-                // Agregar Resultados del Test (Diagnóstico)
-                doc.setFontSize(16);
-                doc.text('Diagnóstico', 10, y);
-                doc.setFontSize(12);
-                y += 10;
-                checkPageEnd();
-                const diagnosis = document.getElementById('diagnosis').textContent.trim(); // Trim para eliminar espacios al inicio y al final
-                const diagnosisLines = doc.splitTextToSize(diagnosis, 180);
-                doc.text(diagnosisLines, 10, y);
-                y += (diagnosisLines.length * 10) + 10; // Incrementar y de manera adecuada
-                checkPageEnd();
-                
-                // Agregar Recomendaciones
-                doc.setFontSize(16);
-                doc.text('Recomendaciones', 10, y);
-                doc.setFontSize(12);
-                y += 10;
-                checkPageEnd();
-                const recommendations = document.getElementById('recommendations').textContent.trim(); // Trim para eliminar espacios al inicio y al final
-                const recommendationLines = doc.splitTextToSize(recommendations, 180);
-                doc.text(recommendationLines, 10, y);
-                y += (recommendationLines.length * 10) + 10; // Incrementar y de manera adecuada
-                checkPageEnd();
-        
-                // Agregar imagen del indicador
-                const img = new Image();
-                img.src = "{{ url_for('serve_file', filename='indicator.png') }}";
-                img.onload = function() {
-                    doc.addImage(img, 'PNG', 10, y, 180, 60); // Ajusta la posición y tamaño de la imagen según sea necesario
-                    doc.save('resultados.pdf');
+    
+                // Agregar logo en la parte superior izquierda
+                const logo = new Image();
+                logo.src = '/static/logo_cie5.png'; // Asegúrate de cambiar 'ruta/del/logo.png' por la ruta correcta de tu logo
+                logo.onload = function() {
+                    doc.addImage(logo, 'PNG', 10, 10, 30, 30); // Ajusta las dimensiones según necesites
+    
+                    // Agregar título centrado
+                    doc.setFontSize(20);
+                    y += 10;
+                    doc.text('EvAInd', doc.internal.pageSize.getWidth() / 2, y, null, null, 'center');
+                    y += 10;
+    
+                    // Agregar subtítulo centrado
+                    doc.setFontSize(14);
+                    doc.text('Conectando mentes, sanando corazones', doc.internal.pageSize.getWidth() / 2, y, null, null, 'center');
+                    y += 20;
+    
+                    // Agregar Información del Usuario
+                    doc.setFontSize(16);
+                    doc.text('Información del Usuario', 10, y);
+                    doc.setFontSize(12);
+                    y += 10;
+                    checkPageEnd();
+                    const userName = document.getElementById('user-name').textContent.trim();
+                    const userAge = document.getElementById('user-age').textContent.trim();
+                    const userGender = document.getElementById('user-gender').textContent.trim();
+                    doc.text(`Nombre: ${userName}`, 10, y);
+                    y += 10;
+                    checkPageEnd();
+                    doc.text(`Edad: ${userAge}`, 10, y);
+                    y += 10;
+                    checkPageEnd();
+                    doc.text(`Género: ${userGender}`, 10, y);
+                    y += 20;
+                    checkPageEnd();
+    
+                    // Agregar Resultados del Test (Diagnóstico)
+                    doc.setFontSize(16);
+                    doc.text('Diagnóstico', 10, y);
+                    doc.setFontSize(12);
+                    y += 10;
+                    checkPageEnd();
+                    const diagnosis = document.getElementById('diagnosis').textContent.trim();
+                    const diagnosisLines = doc.splitTextToSize(diagnosis, 180);
+                    doc.text(diagnosisLines, 10, y);
+                    y += (diagnosisLines.length * 10) + 10; // Incrementar y de manera adecuada
+                    checkPageEnd(20); // Agregar un espacio extra antes de verificar la página para las recomendaciones
+
+                    // Agregar nueva página para Recomendaciones y el indicador
+                    doc.addPage();
+                    y = 10;
+                    // Agregar Recomendaciones
+                    doc.setFontSize(16);
+                    doc.text('Recomendaciones', 10, y);
+                    doc.setFontSize(12);
+                    y += 10;
+                    checkPageEnd();
+                    const recommendations = document.getElementById('recommendations').textContent.trim();
+                    const recommendationLines = doc.splitTextToSize(recommendations, 180);
+                    doc.text(recommendationLines, 10, y);
+                    y += (recommendationLines.length * 10) + 10; // Incrementar y de manera adecuada
+                    checkPageEnd();
+    
+                    // Agregar imagen del indicador
+                    const img = new Image();
+                    img.src = "{{ url_for('serve_file', filename='indicator.png') }}";
+                    img.onload = function() {
+                        checkPageEnd();
+                        doc.addImage(img, 'PNG', 10, y, 180, 60); // Ajusta la posición y tamaño de la imagen según sea necesario
+    
+                        // Agregar pie de página
+                        doc.setFontSize(10);
+                        doc.text('PDF generado por EvAInd', 10, doc.internal.pageSize.getHeight() - 10);
+                        doc.save('resultados.pdf');
+                    };
                 };
             });
         });
-        </script>
+    </script>
+    
         
             <!-- Icono de salir -->
             <div class="logout-icon" onclick="logout()">

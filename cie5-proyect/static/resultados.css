@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Manrope', Regular, monospace;
     background: linear-gradient(to bottom, #1f1f2e, #7F8C8D);
     color: #ffffff;
     margin: 0;
@@ -25,7 +25,7 @@ img {
     margin-top: 20px;
     border-radius: 8px;
     font-family: 'Courier New', Courier, monospace;
-    color: #000000;    
+    color: #ffffff;    
 }
 .container {
     width: 100%;
@@ -39,15 +39,15 @@ img {
 
 
 h1 {
-    color: #000000; 
+    color: #ffffff; 
     font-family: 'Courier New', Courier, monospace;
     width: 100%;
     text-align: center;
 }
 
 .recommendations {
-    background-color: #ffffff;
-    color: #000000; 
+    background: linear-gradient(to bottom, #1f1f2e, #7F8C8D);
+    color: #ffffff;
     font-family: 'Courier New', Courier, monospace;
     padding: 20px;
     margin-bottom: 20px;
@@ -58,8 +58,6 @@ h1 {
 }
 
 .result-box {
-    background-color: #ffffff;
-    color: #000000; 
     font-family: 'Courier New', Courier, monospace;
     padding: 20px;
     margin-bottom: 20px;
@@ -67,10 +65,12 @@ h1 {
     border-radius: 10px; /* Bordes redondeados */
     width: 80% !important; /* Forzar el ancho al 80% */
     flex: 1;
+    background: linear-gradient(to bottom, #1f1f2e, #7F8C8D);
+    color: #ffffff;
 }
 .user-info {
-    background-color: #ffffff;
-    color: #000000; 
+    background: linear-gradient(to bottom, #1f1f2e, #7F8C8D);
+    color: #ffffff;
     font-family: 'Courier New', Courier, monospace;
     padding: 20px;
     margin-bottom: 20px;
@@ -102,11 +102,12 @@ h1 {
     cursor: pointer;
     text-decoration: none;
     border-radius: 5px;
-    background: #1ABC9C;
+    background: #3498DB;
     color: white;
     margin-top: 20px;
     transition: background-color 0.3s ease;
     font-family: 'Courier New', Courier, monospace;
+    
 }
 
 .btn:hover {
@@ -145,6 +146,6 @@ h1 {
   .title {
     font-size: 22px;
     margin-bottom: 20px;
-    color: #000000;
+    color: #ffffff;
     
 }
